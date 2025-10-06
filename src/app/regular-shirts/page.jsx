@@ -104,7 +104,7 @@ export default function RegularShirtsPage() {
 
   return (
     <div>
-      {/* Category Circles */}
+      {/* Category Circles
       <main className="w-full flex flex-col items-center py-12 bg-gray-50">
         <div className="flex gap-10 flex-wrap justify-center">
           {categories.map((cat) => (
@@ -121,11 +121,12 @@ export default function RegularShirtsPage() {
               <p className="text-center mt-4 text-lg font-medium">{cat.label}</p>
             </Link>
           ))}
+            
         </div>
         <div className="line w-96 h-0.5 bg-red-700"></div>
-      </main>
+      </main> */}
 
-      {/* Rating Bar */}
+      {/* Rating Bar
       <div className="w-full border-y border-gray-300 bg-[#f7f7f7] py-4">
         <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-center md:justify-between gap-4 px-4">
           <div className="flex items-center gap-2 text-red-700 font-bold text-lg">
@@ -147,7 +148,7 @@ export default function RegularShirtsPage() {
             <FaCheckCircle className="text-red-700" />
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Regular Shirts Section */}
       <section className="max-w-6xl mx-auto px-6 py-12">
