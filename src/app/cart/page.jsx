@@ -1,167 +1,39 @@
-// "use client";
+"use client";
 
-// import { useEffect, useState } from "react";
-// import Image from "next/image";
-
-// export default function CartPage() {
-//   const [cartItems, setCartItems] = useState([]);
-//   const [subtotal, setSubtotal] = useState(0);
-//   const [tax, setTax] = useState(0);
-
-//   useEffect(() => {
-//     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-//     setCartItems(cart);
-//   }, []);
-
-//   useEffect(() => {
-//     const calcSubtotal = cartItems.reduce((acc, item) => {
-//       const priceNum = Number(item.price.replace(/[^\d]/g, "")) || 0;
-//       return acc + priceNum * item.quantity;
-//     }, 0);
-
-//     setSubtotal(calcSubtotal);
-//     setTax(Math.round(calcSubtotal * 0.1)); // 10% tax
-//   }, [cartItems]);
-
-//   const updateQuantity = (index, change) => {
-//     const updatedCart = [...cartItems];
-//     updatedCart[index].quantity = Math.max(1, updatedCart[index].quantity + change);
-//     setCartItems(updatedCart);
-//     localStorage.setItem("cart", JSON.stringify(updatedCart));
-//   };
-
-//   if (cartItems.length === 0) {
-//     return <div className="p-6 text-center text-lg">Your cart is empty.</div>;
-//   }
-
-//   return (
-//     <div className="max-w-5xl mx-auto p-6">
-//       <h1 className="text-2xl font-bold mb-6">
-//         Your Cart ({cartItems.length} items)
-//       </h1>
-
-//       {/* Cart Items */}
-//       <div className="space-y-6">
-//         {cartItems.map((item, idx) => (
-//           <div key={idx} className="flex justify-between items-center border-b pb-4">
-//             {/* Left: Image + Details */}
-//             <div className="flex gap-4">
-//               <Image
-//                 src={item.image}
-//                 alt={item.name}
-//                 width={80}
-//                 height={80}
-//                 className="object-cover rounded"
-//               />
-//               <div>
-//                 <h2 className="font-semibold">{item.name}</h2>
-//                 <p className="text-gray-600">{item.size ? `Size: ${item.size}` : ""}</p>
-//               </div>
-//             </div>
-
-//             {/* Price */}
-//             <div className="w-28 text-center">
-//               <p>PKR {Number(item.price.replace(/[^\d]/g, ""))}</p>
-//             </div>
-
-//             {/* Quantity */}
-//             <div className="flex items-center gap-2 border rounded px-2">
-//               <button
-//                 onClick={() => updateQuantity(idx, -1)}
-//                 className="px-2 py-1 text-lg"
-//               >
-//                 –
-//               </button>
-//               <span>{item.quantity}</span>
-//               <button
-//                 onClick={() => updateQuantity(idx, 1)}
-//                 className="px-2 py-1 text-lg"
-//               >
-//                 +
-//               </button>
-//             </div>
-
-//             {/* Total */}
-//             <div className="w-28 text-right">
-//               <p>
-//                 PKR {Number(item.price.replace(/[^\d]/g, "")) * item.quantity}
-//               </p>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* Summary */}
-//       <div className="mt-8 border-t pt-6">
-//         <div className="flex justify-between mb-2">
-//           <p>Subtotal:</p>
-//           <p>PKR {subtotal}</p>
-//         </div>
-//         <div className="flex justify-between mb-2">
-//           <p>Sales Tax:</p>
-//           <p>PKR {tax}</p>
-//         </div>
-//         <div className="flex justify-between mb-2">
-//           <p>Coupon Code:</p>
-//           <button className="text-blue-600 underline">Add Coupon</button>
-//         </div>
-//         <div className="flex justify-between font-bold text-lg border-t pt-2">
-//           <p>Grand Total:</p>
-//           <p>PKR {subtotal + tax}</p>
-//         </div>
-//       </div>
-
-//       {/* Checkout */}
-//       <div className="mt-6 flex flex-col items-end">
-//         <p className="text-green-600 mb-2">
-//           Congrats, you’re eligible for Free Shipping 🚚
-//         </p>
-//         <button className="bg-black text-white px-6 py-3 font-semibold rounded hover:bg-red-600 transition">
-//           Check out
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-"use client"; 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // ✅ Router import
 
 export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
   const [tax, setTax] = useState(0);
-  const router = useRouter(); // ✅ Router instance
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    postalCode: "",
+  });
 
+  // Load cart from localStorage
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(cart);
   }, []);
 
+  // Calculate subtotal and tax
   useEffect(() => {
     const calcSubtotal = cartItems.reduce((acc, item) => {
       const priceNum = Number(item.price.replace(/[^\d]/g, "")) || 0;
       return acc + priceNum * item.quantity;
     }, 0);
-
     setSubtotal(calcSubtotal);
     setTax(Math.round(calcSubtotal * 0.1)); // 10% tax
   }, [cartItems]);
 
+  // Update quantity
   const updateQuantity = (index, change) => {
     const updatedCart = [...cartItems];
     updatedCart[index].quantity = Math.max(1, updatedCart[index].quantity + change);
@@ -169,99 +41,214 @@ export default function CartPage() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  if (cartItems.length === 0) {
-    return <div className="p-6 text-center text-lg">Your cart is empty.</div>;
-  }
+  // Delete item
+  const deleteItem = (index) => {
+    const updatedCart = cartItems.filter((_, i) => i !== index);
+    setCartItems(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  // Form input change
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Save & Continue (with API call)
+  const handleSaveContinue = async (e) => {
+    e.preventDefault();
+    if (cartItems.length === 0) return alert("Cart is empty!");
+
+    const order = {
+      customer: formData,
+      cart: cartItems,
+      orderDate: new Date().toISOString(),
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to save order");
+      }
+
+      const data = await res.json();
+      console.log("✅ Order Saved:", data);
+
+      // Clear local data
+      localStorage.removeItem("cart");
+      setCartItems([]);
+      setFormData({
+        fullName: "",
+        email: "",
+        phone: "",
+        address: "",
+        city: "",
+        postalCode: "",
+      });
+
+      alert("✅ Order saved successfully in database!");
+      setShowForm(false);
+    } catch (err) {
+      console.error("❌ API Error:", err);
+      alert("Failed to save order! Check console for details.");
+    }
+  };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">
-        Your Cart ({cartItems.length} items)
-      </h1>
-
-      {/* Cart Items */}
-      <div className="space-y-6">
-        {cartItems.map((item, idx) => (
-          <div key={idx} className="flex justify-between items-center border-b pb-4">
-            {/* Left: Image + Details */}
-            <div className="flex gap-4">
-              <Image
-                src={item.image}
-                alt={item.name}
-                width={80}
-                height={80}
-                className="object-cover rounded"
-              />
-              <div>
-                <h2 className="font-semibold">{item.name}</h2>
-                <p className="text-gray-600">{item.size ? `Size: ${item.size}` : ""}</p>
+    <div className="flex flex-col md:flex-row max-w-6xl mx-auto p-6 gap-6">
+      {/* ---------------- Cart ---------------- */}
+      <div className="w-full md:w-2/3 bg-white shadow-md border border-gray-200 p-6 rounded-xl">
+        <h2 className="text-2xl font-bold mb-4 border-b pb-2">Cart Items</h2>
+        {cartItems.length === 0 ? (
+          <p>Your cart is empty</p>
+        ) : (
+          <div className="space-y-4">
+            {cartItems.map((item, idx) => (
+              <div key={idx} className="flex gap-4 items-center border-b pb-2">
+                <Image
+                  src={item.image || item.images?.[0]}
+                  alt={item.name}
+                  width={60}
+                  height={60}
+                  className="object-cover rounded"
+                />
+                <div className="flex-1">
+                  <p className="font-semibold">{item.name}</p>
+                  {item.size && <p className="text-sm text-gray-500">Size: {item.size}</p>}
+                  <p className="text-sm">Qty: {item.quantity}</p>
+                  <p className="text-sm">Price: PKR {item.price}</p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <button
+                    onClick={() => updateQuantity(idx, 1)}
+                    className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                  >
+                    +
+                  </button>
+                  <button
+                    onClick={() => updateQuantity(idx, -1)}
+                    className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                  >
+                    –
+                  </button>
+                  <button
+                    onClick={() => deleteItem(idx)}
+                    className="px-2 py-1 text-red-600 hover:text-red-800 text-sm"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-
-            {/* Price */}
-            <div className="w-28 text-center">
-              <p>PKR {Number(item.price.replace(/[^\d]/g, ""))}</p>
-            </div>
-
-            {/* Quantity */}
-            <div className="flex items-center gap-2 border rounded px-2">
-              <button
-                onClick={() => updateQuantity(idx, -1)}
-                className="px-2 py-1 text-lg"
-              >
-                –
-              </button>
-              <span>{item.quantity}</span>
-              <button
-                onClick={() => updateQuantity(idx, 1)}
-                className="px-2 py-1 text-lg"
-              >
-                +
-              </button>
-            </div>
-
-            {/* Total */}
-            <div className="w-28 text-right">
-              <p>
-                PKR {Number(item.price.replace(/[^\d]/g, "")) * item.quantity}
-              </p>
-            </div>
+            ))}
           </div>
-        ))}
+        )}
+
+        {cartItems.length > 0 && (
+          <div className="mt-6 border-t pt-4">
+            <p className="flex justify-between">
+              <span>Subtotal:</span> <span>PKR {subtotal}</span>
+            </p>
+            <p className="flex justify-between">
+              <span>Tax (10%):</span> <span>PKR {tax}</span>
+            </p>
+            <p className="flex justify-between font-bold mt-2 border-t pt-2">
+              <span>Grand Total:</span> <span>PKR {subtotal + tax}</span>
+            </p>
+
+            <button
+              onClick={() => setShowForm(true)}
+              className="mt-4 w-full bg-black text-white py-3 rounded hover:bg-red-600 transition"
+            >
+              Enter Customer Details
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Summary */}
-      <div className="mt-8 border-t pt-6">
-        <div className="flex justify-between mb-2">
-          <p>Subtotal:</p>
-          <p>PKR {subtotal}</p>
+      {/* ---------------- Slide-in Customer Form ---------------- */}
+      {showForm && (
+        <div className="w-full md:w-1/3 bg-white shadow-md border border-gray-200 p-6 rounded-xl max-h-[80vh] overflow-y-auto">
+          <h2 className="text-2xl font-bold mb-4 border-b pb-2">Customer Details</h2>
+          <form onSubmit={handleSaveContinue} className="space-y-4">
+            <input
+              type="text"
+              name="fullName"
+              placeholder="Full Name"
+              value={formData.fullName}
+              onChange={handleChange}
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
+              required
+            />
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Phone Number"
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
+              required
+            />
+            <textarea
+              name="address"
+              placeholder="Address"
+              value={formData.address}
+              onChange={handleChange}
+              rows={3}
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
+              required
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="text"
+                name="city"
+                placeholder="City"
+                value={formData.city}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
+                required
+              />
+              <input
+                type="text"
+                name="postalCode"
+                placeholder="Postal Code"
+                value={formData.postalCode}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-black text-white py-3 rounded hover:bg-red-600 transition"
+            >
+              Save & Continue
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="w-full mt-2 border border-gray-400 text-gray-700 py-2 rounded hover:bg-gray-100 transition"
+            >
+              Cancel
+            </button>
+          </form>
         </div>
-        <div className="flex justify-between mb-2">
-          <p>Sales Tax:</p>
-          <p>PKR {tax}</p>
-        </div>
-        <div className="flex justify-between mb-2">
-          <p>Coupon Code:</p>
-          <button className="text-blue-600 underline">Add Coupon</button>
-        </div>
-        <div className="flex justify-between font-bold text-lg border-t pt-2">
-          <p>Grand Total:</p>
-          <p>PKR {subtotal + tax}</p>
-        </div>
-      </div>
-
-      {/* Checkout */}
-      <div className="mt-6 flex flex-col items-end">
-        <p className="text-green-600 mb-2">
-          Congrats, you’re eligible for Free Shipping 🚚
-        </p>
-        <button
-          className="bg-black text-white px-6 py-3 font-semibold rounded hover:bg-red-600 transition"
-          onClick={() => router.push("/customerDetailForm")} // ✅ Checkout route
-        >
-          Check out
-        </button>
-      </div>
+      )}
     </div>
   );
 }
