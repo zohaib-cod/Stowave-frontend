@@ -42,11 +42,9 @@ export default function Footer() {
           <div className="flex items-start gap-3">
             <FaLocationDot className="text-2xl mt-1" />
             <div>
-              <p className="mb-1">(+92)-329-001-909</p>
+              <p className="mb-1">(+92)-329-0010-909</p>
               <p className="text-gray-300">stowave.store@gmail.com</p>
-              <p className="text-gray-300">
-                Shanghai Road, Al Maraj Market, Lahore
-              </p>
+             
             </div>
           </div>
         </div>
@@ -118,7 +116,7 @@ export default function Footer() {
 
       <div className="border-t border-gray-700 py-4 text-center text-sm text-gray-400">
         ©2025. All Rights Reserved by Stowave. Developed by{" "}
-        <span className="text-white">Stowave.Store</span>
+        <span className="text-white">Stowave</span>
       </div>
     </footer>
   );
