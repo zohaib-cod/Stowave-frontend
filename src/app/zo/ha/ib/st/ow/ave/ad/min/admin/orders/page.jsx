@@ -6,17 +6,22 @@ import Image from "next/image";
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("All"); // Filter state
+  const [filter, setFilter] = useState("All");
+
+  // ✅ Use environment variable for backend
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   // 🧩 Fetch orders
   const fetchOrders = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/orders");
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}/api/orders`);
       if (!res.ok) throw new Error("Failed to fetch orders");
       const data = await res.json();
       setOrders(data);
     } catch (err) {
       console.error("❌ Error fetching orders:", err);
+      alert("Failed to fetch orders. Check console for details.");
     } finally {
       setLoading(false);
     }
@@ -30,7 +35,7 @@ export default function OrdersPage() {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this order?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/orders/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete order");
@@ -45,7 +50,7 @@ export default function OrdersPage() {
   // 🧩 Update Status API
   const handleStatusChange = async (id, newStatus) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/orders/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
@@ -60,6 +65,7 @@ export default function OrdersPage() {
       );
     } catch (err) {
       console.error("❌ Error updating status:", err);
+      alert("Failed to update status!");
     }
   };
 
@@ -75,11 +81,12 @@ export default function OrdersPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
+      {/* ✅ Header */}
       <div className="flex justify-between items-center border-b pb-3">
         <h2 className="text-3xl font-bold">Customer Orders</h2>
 
-        {/* ✅ Filter Buttons */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
+          {/* ✅ Filter Buttons */}
           {["All", "Pending", "Processing", "Shipped"].map((status) => (
             <button
               key={status}
@@ -93,6 +100,14 @@ export default function OrdersPage() {
               {status}
             </button>
           ))}
+
+          {/* ✅ Refresh Button */}
+          <button
+            onClick={fetchOrders}
+            className="px-3 py-1 rounded border bg-white hover:bg-gray-200 transition"
+          >
+            🔄 Refresh
+          </button>
         </div>
       </div>
 
@@ -105,9 +120,27 @@ export default function OrdersPage() {
           {/* 🧍 Customer Info */}
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="text-xl font-semibold border-b pb-2 mb-2">
-                Customer Details
-              </h3>
+              <div className="flex items-center gap-3 mb-2">
+                <h3 className="text-xl font-semibold border-b pb-1">
+                  Customer Details
+                </h3>
+
+                {/* ✅ Colored Status Tag */}
+                <span
+                  className={`px-2 py-1 text-xs rounded text-white ${
+                    order.status === "pending"
+                      ? "bg-yellow-500"
+                      : order.status === "processing"
+                      ? "bg-blue-500"
+                      : order.status === "shipped"
+                      ? "bg-green-600"
+                      : "bg-gray-400"
+                  }`}
+                >
+                  {order.status ? order.status.toUpperCase() : "PENDING"}
+                </span>
+              </div>
+
               <p>
                 <span className="font-medium">Name:</span>{" "}
                 {order.customer?.fullName}
@@ -148,9 +181,7 @@ export default function OrdersPage() {
 
               <select
                 value={order.status || "pending"}
-                onChange={(e) =>
-                  handleStatusChange(order._id, e.target.value)
-                }
+                onChange={(e) => handleStatusChange(order._id, e.target.value)}
                 className="border rounded px-2 py-1 text-sm bg-white"
               >
                 <option value="pending">Pending</option>
@@ -216,8 +247,7 @@ export default function OrdersPage() {
               <span className="font-medium">Estimated Total:</span>{" "}
               PKR{" "}
               {order.cart?.reduce((acc, item) => {
-                const priceNum =
-                  Number(item.price?.replace(/[^\d]/g, "")) || 0;
+                const priceNum = Number(item.price?.replace(/[^\d]/g, "")) || 0;
                 return acc + priceNum * item.quantity;
               }, 0)}
             </p>

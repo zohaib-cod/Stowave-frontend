@@ -17,13 +17,16 @@ export default function CartPage() {
     postalCode: "",
   });
 
-  // Load cart from localStorage
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL || "https://stowave-backend-1.onrender.com";
+
+  // ✅ Load cart from localStorage on mount
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(cart);
   }, []);
 
-  // Calculate subtotal and tax
+  // ✅ Calculate subtotal & tax whenever cart updates
   useEffect(() => {
     const calcSubtotal = cartItems.reduce((acc, item) => {
       const priceNum = Number(item.price.replace(/[^\d]/g, "")) || 0;
@@ -33,7 +36,7 @@ export default function CartPage() {
     setTax(Math.round(calcSubtotal * 0.1)); // 10% tax
   }, [cartItems]);
 
-  // Update quantity
+  // ✅ Update item quantity
   const updateQuantity = (index, change) => {
     const updatedCart = [...cartItems];
     updatedCart[index].quantity = Math.max(1, updatedCart[index].quantity + change);
@@ -41,22 +44,22 @@ export default function CartPage() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  // Delete item
+  // ✅ Delete item
   const deleteItem = (index) => {
     const updatedCart = cartItems.filter((_, i) => i !== index);
     setCartItems(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  // Form input change
+  // ✅ Handle form input
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Save & Continue (with API call)
+  // ✅ Save order to backend
   const handleSaveContinue = async (e) => {
     e.preventDefault();
-    if (cartItems.length === 0) return alert("Cart is empty!");
+    if (cartItems.length === 0) return alert("🛒 Your cart is empty!");
 
     const order = {
       customer: formData,
@@ -65,23 +68,21 @@ export default function CartPage() {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/api/orders", {
+      const res = await fetch(`${BASE_URL}/api/orders`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(order),
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
+        const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.error || "Failed to save order");
       }
 
       const data = await res.json();
-      console.log("✅ Order Saved:", data);
+      console.log("✅ Order saved:", data);
 
-      // Clear local data
+      // ✅ Clear cart and reset form
       localStorage.removeItem("cart");
       setCartItems([]);
       setFormData({
@@ -92,9 +93,8 @@ export default function CartPage() {
         city: "",
         postalCode: "",
       });
-
-      alert("✅ Order saved successfully in database!");
       setShowForm(false);
+      alert("✅ Order saved successfully!");
     } catch (err) {
       console.error("❌ API Error:", err);
       alert("Failed to save order! Check console for details.");
@@ -103,15 +103,19 @@ export default function CartPage() {
 
   return (
     <div className="flex flex-col md:flex-row max-w-6xl mx-auto p-6 gap-6">
-      {/* ---------------- Cart ---------------- */}
+      {/* ---------------- CART ---------------- */}
       <div className="w-full md:w-2/3 bg-white shadow-md border border-gray-200 p-6 rounded-xl">
         <h2 className="text-2xl font-bold mb-4 border-b pb-2">Cart Items</h2>
+
         {cartItems.length === 0 ? (
-          <p>Your cart is empty</p>
+          <p className="text-gray-500">Your cart is empty.</p>
         ) : (
           <div className="space-y-4">
             {cartItems.map((item, idx) => (
-              <div key={idx} className="flex gap-4 items-center border-b pb-2">
+              <div
+                key={idx}
+                className="flex gap-4 items-center border-b pb-2 hover:bg-gray-50 transition"
+              >
                 <Image
                   src={item.image || item.images?.[0]}
                   alt={item.name}
@@ -121,10 +125,13 @@ export default function CartPage() {
                 />
                 <div className="flex-1">
                   <p className="font-semibold">{item.name}</p>
-                  {item.size && <p className="text-sm text-gray-500">Size: {item.size}</p>}
+                  {item.size && (
+                    <p className="text-sm text-gray-500">Size: {item.size}</p>
+                  )}
                   <p className="text-sm">Qty: {item.quantity}</p>
-                  <p className="text-sm">Price: PKR {item.price}</p>
+                  <p className="text-sm">Price: {item.price}</p>
                 </div>
+
                 <div className="flex flex-col gap-1">
                   <button
                     onClick={() => updateQuantity(idx, 1)}
@@ -172,38 +179,28 @@ export default function CartPage() {
         )}
       </div>
 
-      {/* ---------------- Slide-in Customer Form ---------------- */}
+      {/* ---------------- CUSTOMER FORM ---------------- */}
       {showForm && (
         <div className="w-full md:w-1/3 bg-white shadow-md border border-gray-200 p-6 rounded-xl max-h-[80vh] overflow-y-auto">
           <h2 className="text-2xl font-bold mb-4 border-b pb-2">Customer Details</h2>
           <form onSubmit={handleSaveContinue} className="space-y-4">
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
-              required
-            />
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
-              required
-            />
+            {[
+              { name: "fullName", type: "text", placeholder: "Full Name" },
+              { name: "email", type: "email", placeholder: "Email Address" },
+              { name: "phone", type: "tel", placeholder: "Phone Number" },
+            ].map((field) => (
+              <input
+                key={field.name}
+                type={field.type}
+                name={field.name}
+                placeholder={field.placeholder}
+                value={formData[field.name]}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
+                required
+              />
+            ))}
+
             <textarea
               name="address"
               placeholder="Address"
@@ -213,6 +210,7 @@ export default function CartPage() {
               className="w-full border px-3 py-2 rounded focus:outline-none focus:border-red-600"
               required
             />
+
             <div className="grid grid-cols-2 gap-4">
               <input
                 type="text"
@@ -233,6 +231,7 @@ export default function CartPage() {
                 required
               />
             </div>
+
             <button
               type="submit"
               className="w-full bg-black text-white py-3 rounded hover:bg-red-600 transition"

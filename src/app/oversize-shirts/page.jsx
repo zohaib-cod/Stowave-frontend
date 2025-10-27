@@ -13,12 +13,12 @@ export default function OversizeShirts() {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(null);
 
-  // Fetch oversize products from backend (now handles Cloudinary URLs)
+  // ✅ Fetch products using .env variable for live URL
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/api/products?category=oversize-tshirts"
+          `${process.env.NEXT_PUBLIC_API_URL}/api/products?category=oversize-tshirts`
         );
         const data = await res.json();
 
@@ -29,10 +29,9 @@ export default function OversizeShirts() {
             price: `PKR ${item.price}`,
             oldPrice: `PKR ${item.originalPrice}`,
             discount: item.discount || "0",
-            // Handle both Cloudinary and local URLs safely
             image: item.image?.startsWith("http")
               ? item.image
-              : `http://localhost:5000/uploads/${item.image}`,
+              : `${process.env.NEXT_PUBLIC_API_URL}/uploads/${item.image}`,
             description: item.description || "No description available",
           }))
         );
@@ -109,14 +108,12 @@ export default function OversizeShirts() {
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
               />
 
-              {/* Discount Tag */}
               {product.discount !== "0" && (
                 <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded">
                   {product.discount}% OFF
                 </div>
               )}
 
-              {/* Eye + Heart Buttons */}
               <div className="absolute top-2 right-2 flex flex-col gap-2">
                 <button
                   onClick={() => {
@@ -141,7 +138,6 @@ export default function OversizeShirts() {
                 </button>
               </div>
 
-              {/* Add to cart button */}
               <button
                 onClick={() => {
                   setSelectedProduct(product);
@@ -156,7 +152,6 @@ export default function OversizeShirts() {
               </button>
             </div>
 
-            {/* Product info */}
             <div className="mt-3 md:mt-4 text-center">
               <p className="font-semibold text-gray-900 text-sm md:text-base">
                 {product.name}
@@ -174,7 +169,6 @@ export default function OversizeShirts() {
         ))}
       </div>
 
-      {/* Modal for product preview */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-4 md:p-6 rounded-lg w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
@@ -186,7 +180,6 @@ export default function OversizeShirts() {
             </button>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              {/* Single image display */}
               <div className="relative w-full h-64 md:h-80 lg:h-96 flex items-center justify-center">
                 <Image
                   src={selectedProduct.image}
@@ -196,7 +189,6 @@ export default function OversizeShirts() {
                 />
               </div>
 
-              {/* Product details */}
               <div className="space-y-3 md:space-y-4">
                 <h2 className="text-xl md:text-2xl font-bold">
                   {selectedProduct.name}
@@ -213,7 +205,6 @@ export default function OversizeShirts() {
                   {selectedProduct.description}
                 </p>
 
-                {/* Size selection */}
                 <div>
                   <p className="font-medium mb-2 text-sm md:text-base">Size:</p>
                   <div className="flex gap-2 md:gap-3">
@@ -233,7 +224,6 @@ export default function OversizeShirts() {
                   </div>
                 </div>
 
-                {/* Quantity selector */}
                 <div className="flex items-center gap-3">
                   <p className="font-medium text-sm md:text-base">Quantity:</p>
                   <button

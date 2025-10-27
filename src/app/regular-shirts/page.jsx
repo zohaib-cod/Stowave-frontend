@@ -13,37 +13,50 @@ export default function RegularShirtsPage() {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(null);
 
-  //  Fetch products (Cloudinary integrated)
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://stowave-backend-1.onrender.com";
+
+  // ✅ Fetch products on mount
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:5000/api/products?category=regular-tshirts"
-        );
+        const res = await fetch(`${BASE_URL}/api/products?category=regular-tshirts`);
+        if (!res.ok) throw new Error("Failed to fetch products");
+
         const data = await res.json();
 
-        setRegularProducts(
-          data.map((item) => ({
-            id: item._id,
-            name: item.title,
-            price: `PKR ${item.price}`,
-            oldPrice: `PKR ${item.originalPrice}`,
-            discount: item.discount || "0",
-            image: item.image?.startsWith("http")
-              ? item.image
-              : `http://localhost:5000/uploads/${item.image}`,
-            description: item.description || "No description available",
-          }))
-        );
+        // ✅ Ensure `data` is an array before mapping
+        if (Array.isArray(data)) {
+          setRegularProducts(
+            data.map((item) => ({
+              id: item._id,
+              name: item.title,
+              price: `PKR ${item.price}`,
+              oldPrice: `PKR ${item.originalPrice}`,
+              discount: item.discount || "0",
+              image: item.image?.startsWith("http")
+                ? item.image
+                : `${BASE_URL}/uploads/${item.image}`,
+              description: item.description || "No description available",
+            }))
+          );
+        } else {
+          console.error("Unexpected API response:", data);
+          setRegularProducts([]);
+        }
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching products:", err);
         setRegularProducts([]);
       }
     };
 
     fetchProducts();
-  }, []);
 
+    // ✅ Load favorites from localStorage
+    const savedFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(savedFavs.map((item) => item.id));
+  }, [BASE_URL]);
+
+  // ✅ Toggle favorite item
   const toggleFavorite = (product) => {
     let existingFav = JSON.parse(localStorage.getItem("favorites")) || [];
     const exists = existingFav.find((item) => item.id === product.id);
@@ -58,8 +71,9 @@ export default function RegularShirtsPage() {
     setFavorites(existingFav.map((item) => item.id));
   };
 
+  // ✅ Add item to cart
   const handleAddToCart = () => {
-    if (!selectedProduct || !selectedSize) return;
+    if (!selectedProduct || !selectedSize) return alert("Please select a size!");
 
     const newItem = {
       id: selectedProduct.id,
@@ -92,11 +106,10 @@ export default function RegularShirtsPage() {
         Comfortable & stylish regular-fit shirts perfect for daily wear and formal occasions.
       </p>
 
-      {/* Products Grid */}
+      {/* ✅ Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {regularProducts.map((product) => (
           <div key={product.id} className="relative group">
-            {/* Image with Zoom Effect */}
             <div className="relative w-full h-72 overflow-hidden rounded-lg">
               <Image
                 src={product.image}
@@ -112,7 +125,7 @@ export default function RegularShirtsPage() {
                 </div>
               )}
 
-              {/* ✅ Eye + Heart Buttons */}
+              {/* Buttons */}
               <div className="absolute top-3 right-3 flex flex-col gap-3">
                 <button
                   onClick={() => {
@@ -136,7 +149,7 @@ export default function RegularShirtsPage() {
                 </button>
               </div>
 
-              {/* ✅ Add to Cart Button */}
+              {/* Add to Cart Button */}
               <button
                 onClick={() => {
                   setSelectedProduct(product);
@@ -165,7 +178,7 @@ export default function RegularShirtsPage() {
         ))}
       </div>
 
-      {/* Modal */}
+      {/* ✅ Modal */}
       {selectedProduct && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-3xl relative">
@@ -188,12 +201,8 @@ export default function RegularShirtsPage() {
 
               <div>
                 <h2 className="text-2xl font-bold">{selectedProduct.name}</h2>
-                <p className="text-lg text-gray-700 mb-2">
-                  {selectedProduct.price}
-                </p>
-                <p className="text-gray-600 mb-4">
-                  {selectedProduct.description}
-                </p>
+                <p className="text-lg text-gray-700 mb-2">{selectedProduct.price}</p>
+                <p className="text-gray-600 mb-4">{selectedProduct.description}</p>
 
                 {/* Size Selection */}
                 <div className="mb-4">

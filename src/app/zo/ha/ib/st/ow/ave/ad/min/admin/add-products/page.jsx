@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { FiPlus, FiX } from "react-icons/fi";
 
+// ✅ Use environment variable for backend API
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://stowave-backend-1.onrender.com";
+
 export default function AddProductsPage() {
   const [category, setCategory] = useState("all");
   const [products, setProducts] = useState([]);
@@ -19,19 +22,30 @@ export default function AddProductsPage() {
 
   const categories = ["all", "regular-tshirts", "oversize-tshirts"];
 
+  // ✅ Fetch products on mount
   useEffect(() => {
     fetchProducts();
   }, []);
 
   const fetchProducts = async (cat = category) => {
     try {
-      let url = "http://localhost:5000/api/products";
+      let url = `${API_BASE}/api/products`;
       if (cat && cat !== "all") url += `?category=${cat}`;
+
       const res = await fetch(url);
       const data = await res.json();
-      setProducts(data);
+
+      // ✅ Handle both object and array responses safely
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else if (Array.isArray(data.products)) {
+        setProducts(data.products);
+      } else {
+        console.warn("Unexpected response:", data);
+        setProducts([]);
+      }
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching products:", err);
       setProducts([]);
     }
   };
@@ -45,6 +59,7 @@ export default function AddProductsPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const payload = new FormData();
     payload.append("title", formData.title);
     payload.append("price", formData.price);
@@ -55,7 +70,7 @@ export default function AddProductsPage() {
     if (formData.image) payload.append("image", formData.image);
 
     try {
-      let url = "http://localhost:5000/api/products";
+      let url = `${API_BASE}/api/products`;
       const method = editingId ? "PUT" : "POST";
       if (editingId) url += `/${editingId}`;
 
@@ -98,7 +113,8 @@ export default function AddProductsPage() {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
-      await fetch(`http://localhost:5000/api/products/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_BASE}/api/products/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete product");
       setProducts((prev) => prev.filter((p) => p._id !== id));
     } catch (err) {
       console.error(err);
@@ -221,50 +237,54 @@ export default function AddProductsPage() {
       {/* Products List */}
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((p) => (
-            <div
-              key={p._id}
-              className="bg-white p-4 rounded-2xl shadow-md hover:shadow-xl transition flex flex-col items-center"
-            >
-              <img
-                src={
-                  p.image?.startsWith("http")
-                    ? p.image
-                    : `http://localhost:5000/uploads/${p.image}`
-                }
-                alt={p.title}
-                className="w-32 h-32 object-cover rounded-xl mb-4"
-              />
-              <h3 className="font-semibold text-lg mb-2 text-gray-800 text-center">
-                {p.title}
-              </h3>
-              <p className="text-gray-600 mb-1">
-                Price: <span className="font-semibold">${p.price}</span>
-              </p>
-              <p className="text-gray-400 mb-2 line-through">${p.originalPrice}</p>
-              <p
-                className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                  p.stock ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                }`}
+          {Array.isArray(products) && products.length > 0 ? (
+            products.map((p) => (
+              <div
+                key={p._id}
+                className="bg-white p-4 rounded-2xl shadow-md hover:shadow-xl transition flex flex-col items-center"
               >
-                {p.stock ? "In Stock" : "Sold Out"}
-              </p>
-              <div className="flex gap-3 mt-4">
-                <button
-                  onClick={() => handleEdit(p)}
-                  className="bg-blue-600 text-white px-4 py-1 rounded-xl hover:bg-blue-700 transition"
+                <img
+                  src={
+                    p.image?.startsWith("http")
+                      ? p.image
+                      : `${API_BASE}/uploads/${p.image}`
+                  }
+                  alt={p.title}
+                  className="w-32 h-32 object-cover rounded-xl mb-4"
+                />
+                <h3 className="font-semibold text-lg mb-2 text-gray-800 text-center">
+                  {p.title}
+                </h3>
+                <p className="text-gray-600 mb-1">
+                  Price: <span className="font-semibold">${p.price}</span>
+                </p>
+                <p className="text-gray-400 mb-2 line-through">${p.originalPrice}</p>
+                <p
+                  className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    p.stock ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                  }`}
                 >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(p._id)}
-                  className="bg-red-600 text-white px-4 py-1 rounded-xl hover:bg-red-700 transition"
-                >
-                  Delete
-                </button>
+                  {p.stock ? "In Stock" : "Sold Out"}
+                </p>
+                <div className="flex gap-3 mt-4">
+                  <button
+                    onClick={() => handleEdit(p)}
+                    className="bg-blue-600 text-white px-4 py-1 rounded-xl hover:bg-blue-700 transition"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(p._id)}
+                    className="bg-red-600 text-white px-4 py-1 rounded-xl hover:bg-red-700 transition"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-center text-gray-500 w-full">No products found.</p>
+          )}
         </div>
       </div>
     </div>
