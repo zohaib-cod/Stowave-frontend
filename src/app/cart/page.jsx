@@ -36,7 +36,7 @@ export default function CartPage() {
     setTax(Math.round(calcSubtotal * 0.1)); // 10% tax
   }, [cartItems]);
 
-  // ✅ Update item quantity
+  // Update item quantity
   const updateQuantity = (index, change) => {
     const updatedCart = [...cartItems];
     updatedCart[index].quantity = Math.max(1, updatedCart[index].quantity + change);
@@ -44,19 +44,19 @@ export default function CartPage() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  // ✅ Delete item
+  // Delete item
   const deleteItem = (index) => {
     const updatedCart = cartItems.filter((_, i) => i !== index);
     setCartItems(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  // ✅ Handle form input
+  //  Handle form input
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Save order to backend
+  //  Save order to backend
   const handleSaveContinue = async (e) => {
     e.preventDefault();
     if (cartItems.length === 0) return alert("🛒 Your cart is empty!");
@@ -80,9 +80,9 @@ export default function CartPage() {
       }
 
       const data = await res.json();
-      console.log("✅ Order saved:", data);
+      console.log(" Order saved:", data);
 
-      // ✅ Clear cart and reset form
+      //  Clear cart and reset form
       localStorage.removeItem("cart");
       setCartItems([]);
       setFormData({
@@ -94,7 +94,7 @@ export default function CartPage() {
         postalCode: "",
       });
       setShowForm(false);
-      alert("✅ Order saved successfully!");
+      alert(" Order saved successfully!");
     } catch (err) {
       console.error("❌ API Error:", err);
       alert("Failed to save order! Check console for details.");
