@@ -88,12 +88,12 @@ export default function OversizeShirts() {
 
   return (
     // <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12 bg-white dark:bg-white text-black">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12  text-black  dark:text-white transition-colors duration-300">
 
-      <h2 className="text-2xl md:text-3xl font-bold text-black mb-4 text-center md:text-left">
+      <h2 className="text-2xl md:text-3xl font-bold text-black mb-4 text-center md:text-left dark:text-white">
         Oversize-Shirts
       </h2>
-      <p className="text-gray-500 mb-6 md:mb-8 text-sm md:text-base text-center md:text-left">
+      <p className="text-gray-500 mb-6 md:mb-8 text-sm md:text-base text-center md:text-left dark:text-white  ">
         Introducing the Dobby fabric. Comes with a unique pattern embossed and
         is perfect for late summers & early winters.
       </p>
@@ -111,7 +111,7 @@ export default function OversizeShirts() {
               />
 
               {product.discount !== "0" && (
-                <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                <div className="absolute top-2 left-2 bg-red-600  text-white text-xs font-semibold px-2 py-1 rounded">
                   {product.discount}% OFF
                 </div>
               )}
@@ -133,7 +133,7 @@ export default function OversizeShirts() {
                   className={`p-1.5 md:p-2 rounded-full shadow ${
                     favorites.includes(product.id)
                       ? "bg-gray-300 text-red-600"
-                      : "bg-white text-gray-800 hover:bg-gray-200"
+                      : "bg-white text-gray-800    hover:bg-gray-200"
                   }`}
                 >
                   <FaHeart className="text-sm md:text-base" />
@@ -148,7 +148,7 @@ export default function OversizeShirts() {
                 }}
                 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
                            flex items-center justify-center bg-red-600 text-white font-semibold 
-                           px-3 py-1.5 md:px-4 md:py-2 rounded opacity-0 group-hover:opacity-100 transition duration-500 text-sm md:text-base"
+                           px-3 py-1.5 md:px-4 md:py-2 rounded opacity-0 group-hover:opacity-100 transition duration-500 text-sm md:text-base "
               >
                 Add to Cart
               </button>
@@ -176,7 +176,7 @@ export default function OversizeShirts() {
           <div className="bg-white p-4 md:p-6 rounded-lg w-full max-w-3xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedProduct(null)}
-              className="absolute top-2 right-2 md:top-3 md:right-3 text-xl font-bold z-10 bg-white rounded-full w-8 h-8 flex items-center justify-center"
+              className="absolute top-2 right-2 md:top-3 md:right-3 text-xl font-bold z-10 bg-white rounded-full w-8 h-8 flex items-center justify-center dark:text-black"
             >
               ✕
             </button>
@@ -196,25 +196,25 @@ export default function OversizeShirts() {
                   {selectedProduct.name}
                 </h2>
                 <div className="flex items-center gap-2">
-                  <p className="text-gray-500 line-through text-sm md:text-base">
+                  <p className="text-gray-500 line-through text-sm md:text-base dark:text-black">
                     {selectedProduct.oldPrice}
                   </p>
-                  <p className="text-lg text-gray-700 font-semibold">
+                  <p className="text-lg text-gray-700 font-semibold dark:text-black ">
                     {selectedProduct.price}
                   </p>
                 </div>
-                <p className="text-gray-600 text-sm md:text-base">
+                <p className="text-gray-600 text-sm md:text-base dark:text-black">
                   {selectedProduct.description}
                 </p>
 
                 <div>
-                  <p className="font-medium mb-2 text-sm md:text-base">Size:</p>
+                  <p className="font-medium mb-2 text-sm md:text-base dark:text-black">Size:</p>
                   <div className="flex gap-2 md:gap-3">
                     {["S", "M", "L", "XL"].map((size) => (
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}
-                        className={`border px-2 md:px-3 py-1 text-xs md:text-sm transition ${
+                        className={`border px-2 md:px-3 py-1 text-xs dark:text-black md:text-sm transition ${
                           selectedSize === size
                             ? "bg-black text-white"
                             : "hover:bg-black hover:text-white"
@@ -227,17 +227,17 @@ export default function OversizeShirts() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <p className="font-medium text-sm md:text-base">Quantity:</p>
+                  <p className="font-medium text-sm md:text-base dark:text-black">Quantity:</p>
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="border px-2 md:px-3 py-1 text-sm md:text-base"
+                    className="border px-2 md:px-3 py-1 text-sm md:text-base dark:text-black"
                   >
                     -
                   </button>
-                  <span className="text-sm md:text-base">{quantity}</span>
+                  <span className="text-sm md:text-base dark:text-black">{quantity}</span>
                   <button
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="border px-2 md:px-3 py-1 text-sm md:text-base"
+                    className="border px-2 md:px-3 py-1 text-sm md:text-base dark:text-black"
                   >
                     +
                   </button>

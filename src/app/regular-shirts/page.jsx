@@ -100,9 +100,7 @@ export default function RegularShirtsPage() {
   };
 
   return (
-    // <div className="max-w-6xl mx-auto px-6 py-12">
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12 bg-white dark:bg-white text-black">
-
+    <div className="max-w-6xl mx-auto px-6 py-12">
       <h2 className="text-3xl font-bold text-black mb-4">Regular-Shirts</h2>
       <p className="text-gray-500 mb-8">
         Comfortable & stylish regular-fit shirts perfect for daily wear and formal occasions.
