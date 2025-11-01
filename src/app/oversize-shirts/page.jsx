@@ -87,7 +87,9 @@ export default function OversizeShirts() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+    // <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12 bg-white dark:bg-white text-black">
+
       <h2 className="text-2xl md:text-3xl font-bold text-black mb-4 text-center md:text-left">
         Oversize-Shirts
       </h2>
