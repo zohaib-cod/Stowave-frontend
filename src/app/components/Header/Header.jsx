@@ -272,10 +272,10 @@ export default function Header() {
 /* ---------- SLIDER COMPONENT ---------- */
 function Slider() {
   const images = [
-    "/slider1.png",
-    "/slider2.png",
-    "/slider3.png",
-    "/slider4.png",
+    "/slider1.jpg",
+    "/slider2.jpg",
+    "/slider3.jpg",
+    "/slider4.jpg",
     "/slider5.png",
   ];
   const [currentIndex, setCurrentIndex] = useState(0);
