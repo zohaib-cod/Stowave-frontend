@@ -508,7 +508,7 @@ export default function CartPage() {
                 value={formData.postalCode}
                 onChange={handleChange}
                 className="w-full border border-gray-300 dark:border-neutral-700 bg-transparent px-3 py-2 rounded-lg focus:outline-none focus:border-red-600 dark:focus:border-red-500"
-                required
+                
               />
             </div>
 
