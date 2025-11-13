@@ -34,6 +34,8 @@
 
 
 "use client";
+import AdminProtectedRoute from "@/app/components/AdminProtectedRoute";
+
 import React, { useEffect, useState } from "react";
 
 export default function SettingsPage() {
@@ -68,8 +70,11 @@ export default function SettingsPage() {
     );
     alert("✅ Settings saved successfully!");
   };
+ 
 
   return (
+        
+
     <div>
       <h1 className="text-3xl font-bold mb-6 text-[#1f2251]">Settings</h1>
       <div className="bg-white p-6 rounded-2xl shadow-md max-w-lg">
@@ -106,5 +111,7 @@ export default function SettingsPage() {
         </form>
       </div>
     </div>
+        
+
   );
 }

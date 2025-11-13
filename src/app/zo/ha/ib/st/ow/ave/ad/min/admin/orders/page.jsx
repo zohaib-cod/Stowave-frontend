@@ -1,289 +1,10 @@
-// "use client";
-
-// import { useState, useEffect } from "react";
-// import Image from "next/image";
-
-// export default function OrdersPage() {
-//   const [orders, setOrders] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [filter, setFilter] = useState("All");
-
-//   // ✅ Use environment variable for backend
-//   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-//   // 🧩 Fetch orders
-//   const fetchOrders = async () => {
-//     try {
-//       setLoading(true);
-//       const res = await fetch(`${BASE_URL}/api/orders`);
-//       if (!res.ok) throw new Error("Failed to fetch orders");
-//       const data = await res.json();
-//       setOrders(data);
-//     } catch (err) {
-//       console.error("❌ Error fetching orders:", err);
-//       alert("Failed to fetch orders. Check console for details.");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchOrders();
-//   }, []);
-
-//   // 🧩 Delete Order API
-//   const handleDelete = async (id) => {
-//     if (!confirm("Are you sure you want to delete this order?")) return;
-//     try {
-//       const res = await fetch(`${BASE_URL}/api/orders/${id}`, {
-//         method: "DELETE",
-//       });
-//       if (!res.ok) throw new Error("Failed to delete order");
-//       setOrders((prev) => prev.filter((o) => o._id !== id));
-//       alert("✅ Order deleted successfully");
-//     } catch (err) {
-//       console.error("❌ Error deleting order:", err);
-//       alert("Failed to delete order");
-//     }
-//   };
-
-//   // 🧩 Update Status API
-//   const handleStatusChange = async (id, newStatus) => {
-//     try {
-//       const res = await fetch(`${BASE_URL}/api/orders/${id}`, {
-//         method: "PUT",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ status: newStatus }),
-//       });
-//       if (!res.ok) throw new Error("Failed to update status");
-
-//       // Update local state instantly
-//       setOrders((prev) =>
-//         prev.map((order) =>
-//           order._id === id ? { ...order, status: newStatus } : order
-//         )
-//       );
-//     } catch (err) {
-//       console.error("❌ Error updating status:", err);
-//       alert("Failed to update status!");
-//     }
-//   };
-
-//   // 🧩 Filter orders based on status
-//   const filteredOrders =
-//     filter === "All"
-//       ? orders
-//       : orders.filter((o) => o.status === filter.toLowerCase());
-
-//   if (loading) return <p className="text-center mt-10">Loading orders...</p>;
-//   if (orders.length === 0)
-//     return <p className="text-center mt-10">No orders found.</p>;
-
-//   return (
-//     <div className="max-w-6xl mx-auto p-6 space-y-6">
-//       {/* ✅ Header */}
-//       <div className="flex justify-between items-center border-b pb-3">
-//         <h2 className="text-3xl font-bold">Customer Orders</h2>
-
-//         <div className="flex gap-3 items-center">
-//           {/* ✅ Filter Buttons */}
-//           {["All", "Pending", "Processing", "Shipped"].map((status) => (
-//             <button
-//               key={status}
-//               onClick={() => setFilter(status)}
-//               className={`px-3 py-1 rounded font-medium border ${
-//                 filter === status
-//                   ? "bg-black text-white"
-//                   : "hover:bg-gray-200 bg-white"
-//               }`}
-//             >
-//               {status}
-//             </button>
-//           ))}
-
-//           {/* ✅ Refresh Button */}
-//           <button
-//             onClick={fetchOrders}
-//             className="px-3 py-1 rounded border bg-white hover:bg-gray-200 transition"
-//           >
-//             🔄 Refresh
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* ✅ Orders List */}
-//       {filteredOrders.map((order, index) => (
-//         <div
-//           key={order._id || index}
-//           className="bg-white border shadow-md rounded-xl p-6 space-y-4"
-//         >
-//           {/* 🧍 Customer Info */}
-//           <div className="flex justify-between items-start">
-//             <div>
-//               <div className="flex items-center gap-3 mb-2">
-//                 <h3 className="text-xl font-semibold border-b pb-1">
-//                   Customer Details
-//                 </h3>
-
-//                 {/* ✅ Colored Status Tag */}
-//                 <span
-//                   className={`px-2 py-1 text-xs rounded text-white ${
-//                     order.status === "pending"
-//                       ? "bg-yellow-500"
-//                       : order.status === "processing"
-//                       ? "bg-blue-500"
-//                       : order.status === "shipped"
-//                       ? "bg-green-600"
-//                       : "bg-gray-400"
-//                   }`}
-//                 >
-//                   {order.status ? order.status.toUpperCase() : "PENDING"}
-//                 </span>
-//               </div>
-
-//               <p>
-//                 <span className="font-medium">Name:</span>{" "}
-//                 {order.customer?.fullName}
-//               </p>
-//               <p>
-//                 <span className="font-medium">Email:</span>{" "}
-//                 {order.customer?.email}
-//               </p>
-//               <p>
-//                 <span className="font-medium">Phone:</span>{" "}
-//                 {order.customer?.phone}
-//               </p>
-//               <p>
-//                 <span className="font-medium">Address:</span>{" "}
-//                 {order.customer?.address}
-//               </p>
-//               <p>
-//                 <span className="font-medium">City:</span> {order.customer?.city}
-//               </p>
-//               <p>
-//                 <span className="font-medium">Postal Code:</span>{" "}
-//                 {order.customer?.postalCode}
-//               </p>
-//               <p className="text-sm text-gray-500 mt-1">
-//                 <span className="font-medium">Order Date:</span>{" "}
-//                 {new Date(order.orderDate).toLocaleString()}
-//               </p>
-//             </div>
-
-//             {/* 🗑️ Delete + Status Dropdown */}
-//             <div className="flex flex-col items-end gap-2">
-//               <button
-//                 onClick={() => handleDelete(order._id)}
-//                 className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
-//               >
-//                 Delete
-//               </button>
-
-//               <select
-//                 value={order.status || "pending"}
-//                 onChange={(e) => handleStatusChange(order._id, e.target.value)}
-//                 className="border rounded px-2 py-1 text-sm bg-white"
-//               >
-//                 <option value="pending">Pending</option>
-//                 <option value="processing">Processing</option>
-//                 <option value="shipped">Shipped</option>
-//               </select>
-//             </div>
-//           </div>
-
-//           {/* 🛍 Product Info */}
-//           <div>
-//             <h3 className="text-xl font-semibold border-b pb-2 mb-3">
-//               Ordered Products
-//             </h3>
-//             <div className="space-y-4">
-//               {order.cart?.map((item, i) => {
-//                 const imgSrc =
-//                   item.image && item.image.startsWith("http")
-//                     ? item.image
-//                     : item.images?.[0] && item.images[0].startsWith("http")
-//                     ? item.images[0]
-//                     : "/no-image.png";
-
-//                 return (
-//                   <div
-//                     key={i}
-//                     className="flex items-center gap-4 border-b pb-2 last:border-none"
-//                   >
-//                     <Image
-//                       src={imgSrc}
-//                       alt={item.name || "Product Image"}
-//                       width={70}
-//                       height={70}
-//                       className="object-cover rounded"
-//                     />
-//                     <div className="flex-1">
-//                       <p className="font-semibold">{item.name}</p>
-//                       {item.size && (
-//                         <p className="text-sm text-gray-500">
-//                           Size: {item.size}
-//                         </p>
-//                       )}
-//                       <p className="text-sm text-gray-700">
-//                         Quantity: {item.quantity}
-//                       </p>
-//                       <p className="text-sm text-gray-700">
-//                         Price: PKR {item.price}
-//                       </p>
-//                     </div>
-//                   </div>
-//                 );
-//               })}
-//             </div>
-//           </div>
-
-//           {/* 💰 Summary */}
-//           <div className="border-t pt-3">
-//             <p>
-//               <span className="font-medium">Total Items:</span>{" "}
-//               {order.cart?.reduce((acc, item) => acc + item.quantity, 0)}
-//             </p>
-//             <p>
-//               <span className="font-medium">Estimated Total:</span>{" "}
-//               PKR{" "}
-//               {order.cart?.reduce((acc, item) => {
-//                 const priceNum = Number(item.price?.replace(/[^\d]/g, "")) || 0;
-//                 return acc + priceNum * item.quantity;
-//               }, 0)}
-//             </p>
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "use client";
-
+import AdminProtectedRoute from "@/app/components/AdminProtectedRoute";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { saveAs } from "file-saver";
+import ExcelJS from "exceljs";
+import { FiDownload } from "react-icons/fi"; // React icon import
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -291,6 +12,12 @@ export default function OrdersPage() {
   const [filter, setFilter] = useState("All");
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+  useEffect(() => {
+    const storedFilter = localStorage.getItem("ordersActiveTab");
+    if (storedFilter) setFilter(storedFilter);
+    fetchOrders();
+  }, []);
 
   const fetchOrders = async () => {
     try {
@@ -300,28 +27,21 @@ export default function OrdersPage() {
       const data = await res.json();
       setOrders(data);
     } catch (err) {
-      console.error("❌ Error fetching orders:", err);
-      alert("Failed to fetch orders. Check console for details.");
+      console.error(err);
+      alert("Failed to fetch orders");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this order?")) return;
     try {
-      const res = await fetch(`${BASE_URL}/api/orders/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(`${BASE_URL}/api/orders/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete order");
       setOrders((prev) => prev.filter((o) => o._id !== id));
-      alert("✅ Order deleted successfully");
     } catch (err) {
-      console.error("❌ Error deleting order:", err);
+      console.error(err);
       alert("Failed to delete order");
     }
   };
@@ -334,44 +54,100 @@ export default function OrdersPage() {
         body: JSON.stringify({ status: newStatus }),
       });
       if (!res.ok) throw new Error("Failed to update status");
-
       setOrders((prev) =>
-        prev.map((order) =>
-          order._id === id ? { ...order, status: newStatus } : order
-        )
+        prev.map((order) => (order._id === id ? { ...order, status: newStatus } : order))
       );
     } catch (err) {
-      console.error("❌ Error updating status:", err);
-      alert("Failed to update status!");
+      console.error(err);
+      alert("Failed to update status");
     }
   };
 
+  // --- Safe Excel download function ---
+  const downloadExcel = async (ordersData, fileName) => {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Orders");
+
+    ordersData.forEach((order) => {
+      sheet.addRow(["Customer Details"]);
+      sheet.addRow(["Status", (order.status || "PENDING").toUpperCase()]);
+      sheet.addRow(["Name", order.customer?.fullName || ""]);
+      sheet.addRow(["Email", order.customer?.email || ""]);
+      sheet.addRow(["Phone", order.customer?.phone || ""]);
+      sheet.addRow(["Address", order.customer?.address || ""]);
+      sheet.addRow(["City", order.customer?.city || ""]);
+      sheet.addRow(["Postal Code", order.customer?.postalCode || ""]);
+      sheet.addRow([
+        "Order Date",
+        order.orderDate ? new Date(order.orderDate).toLocaleString() : "",
+      ]);
+      sheet.addRow([]);
+
+      sheet.addRow(["Ordered Products"]);
+      sheet.addRow(["Product Name", "Size", "Quantity", "Price", "Image URL"]);
+
+      order.cart?.forEach((item) => {
+        const imgSrc =
+          item.image?.startsWith("http")
+            ? item.image
+            : item.images?.[0]?.startsWith("http")
+            ? item.images[0]
+            : "";
+        sheet.addRow([
+          item.name || "",
+          item.size || "",
+          item.quantity || 0,
+          item.price || "",
+          imgSrc,
+        ]);
+      });
+
+      sheet.addRow([]);
+      sheet.addRow(["Total Items", order.cart?.reduce((acc, item) => acc + (item.quantity || 0), 0)]);
+      sheet.addRow([
+        "Estimated Total",
+        order.cart?.reduce(
+          (acc, item) =>
+            acc + ((Number(item.price?.replace(/[^\d]/g, "")) || 0) * (item.quantity || 0)),
+          0
+        ),
+      ]);
+      sheet.addRow([]);
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(blob, `${fileName}.xlsx`);
+  };
+
   const filteredOrders =
-    filter === "All"
-      ? orders
-      : orders.filter((o) => o.status === filter.toLowerCase());
+    filter === "All" ? orders : orders.filter((o) => o.status === filter.toLowerCase());
+
+  const handleTabChange = (status) => {
+    setFilter(status);
+    localStorage.setItem("ordersActiveTab", status);
+  };
 
   if (loading) return <p className="text-center mt-10">Loading orders...</p>;
-  if (orders.length === 0)
-    return <p className="text-center mt-10">No orders found.</p>;
+  if (orders.length === 0) return <p className="text-center mt-10">No orders found.</p>;
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6">
-      {/* ✅ Header */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 gap-3">
         <h2 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">
           Customer Orders
         </h2>
 
-        <div className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-3 w-full sm:w-auto">
+        <div className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-3 w-full sm:w-auto items-center">
           {["All", "Pending", "Processing", "Shipped"].map((status) => (
             <button
               key={status}
-              onClick={() => setFilter(status)}
+              onClick={() => handleTabChange(status)}
               className={`px-3 py-1 rounded font-medium border text-sm sm:text-base ${
-                filter === status
-                  ? "bg-black text-white"
-                  : "hover:bg-gray-200 bg-white"
+                filter === status ? "bg-black text-white" : "hover:bg-gray-200 bg-white"
               }`}
             >
               {status}
@@ -384,23 +160,31 @@ export default function OrdersPage() {
           >
             🔄 Refresh
           </button>
+
+          <button
+            onClick={() => downloadExcel(filteredOrders, "Orders")}
+            className="px-3 py-1 rounded border bg-white hover:bg-gray-200 transition text-sm sm:text-base flex items-center gap-1"
+            title="Download Excel"
+          >
+            <FiDownload size={18} />
+            <span>Download</span>
+          </button>
         </div>
       </div>
 
-      {/* ✅ Orders List */}
+      {/* Orders List */}
       {filteredOrders.map((order, index) => (
         <div
           key={order._id || index}
           className="bg-white border shadow-md rounded-xl p-4 sm:p-6 space-y-4"
         >
-          {/* 🧍 Customer Info */}
+          {/* Customer Info */}
           <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-3">
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-3 mb-2">
                 <h3 className="text-lg sm:text-xl font-semibold border-b pb-1">
                   Customer Details
                 </h3>
-
                 <span
                   className={`px-2 py-1 text-xs rounded text-white ${
                     order.status === "pending"
@@ -412,43 +196,37 @@ export default function OrdersPage() {
                       : "bg-gray-400"
                   }`}
                 >
-                  {order.status ? order.status.toUpperCase() : "PENDING"}
+                  {order.status?.toUpperCase() || "PENDING"}
                 </span>
               </div>
 
               <div className="text-sm sm:text-base space-y-1">
                 <p>
-                  <span className="font-medium">Name:</span>{" "}
-                  {order.customer?.fullName}
+                  <span className="font-medium">Name:</span> {order.customer?.fullName || ""}
                 </p>
                 <p>
-                  <span className="font-medium">Email:</span>{" "}
-                  {order.customer?.email}
+                  <span className="font-medium">Email:</span> {order.customer?.email || ""}
                 </p>
                 <p>
-                  <span className="font-medium">Phone:</span>{" "}
-                  {order.customer?.phone}
+                  <span className="font-medium">Phone:</span> {order.customer?.phone || ""}
                 </p>
                 <p>
-                  <span className="font-medium">Address:</span>{" "}
-                  {order.customer?.address}
+                  <span className="font-medium">Address:</span> {order.customer?.address || ""}
                 </p>
                 <p>
-                  <span className="font-medium">City:</span>{" "}
-                  {order.customer?.city}
+                  <span className="font-medium">City:</span> {order.customer?.city || ""}
                 </p>
                 <p>
-                  <span className="font-medium">Postal Code:</span>{" "}
-                  {order.customer?.postalCode}
+                  <span className="font-medium">Postal Code:</span> {order.customer?.postalCode || ""}
                 </p>
                 <p className="text-gray-500 text-xs sm:text-sm mt-1">
                   <span className="font-medium">Order Date:</span>{" "}
-                  {new Date(order.orderDate).toLocaleString()}
+                  {order.orderDate ? new Date(order.orderDate).toLocaleString() : ""}
                 </p>
               </div>
             </div>
 
-            {/* 🗑️ Actions */}
+            {/* Actions */}
             <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2">
               <button
                 onClick={() => handleDelete(order._id)}
@@ -466,24 +244,31 @@ export default function OrdersPage() {
                 <option value="processing">Processing</option>
                 <option value="shipped">Shipped</option>
               </select>
+
+              <button
+                onClick={() => downloadExcel([order], order.customer?.fullName || "Order")}
+                title="Download Single Order"
+                className="px-2 py-1 border rounded hover:bg-gray-200 transition text-sm flex items-center gap-1"
+              >
+                <FiDownload size={16} />
+                <span>Download</span>
+              </button>
             </div>
           </div>
 
-          {/* 🛍 Product Info */}
+          {/* Products Info */}
           <div>
             <h3 className="text-lg sm:text-xl font-semibold border-b pb-2 mb-3">
               Ordered Products
             </h3>
-
             <div className="space-y-3">
               {order.cart?.map((item, i) => {
                 const imgSrc =
-                  item.image && item.image.startsWith("http")
+                  item.image?.startsWith("http")
                     ? item.image
-                    : item.images?.[0] && item.images[0].startsWith("http")
+                    : item.images?.[0]?.startsWith("http")
                     ? item.images[0]
                     : "/no-image.png";
-
                 return (
                   <div
                     key={i}
@@ -498,17 +283,10 @@ export default function OrdersPage() {
                     />
                     <div className="flex-1 text-center sm:text-left">
                       <p className="font-semibold">{item.name}</p>
-                      {item.size && (
-                        <p className="text-sm text-gray-500">
-                          Size: {item.size}
-                        </p>
-                      )}
-                      <p className="text-sm text-gray-700">
-                        Quantity: {item.quantity}
-                      </p>
-                      <p className="text-sm text-gray-700">
-                        Price: PKR {item.price}
-                      </p>
+                      {item.size && <p className="text-sm text-gray-500">Size: {item.size}</p>}
+                      <p className="text-sm text-gray-700">Quantity: {item.quantity || 0}</p>
+                      <p className="text-sm text-gray-700">Price: PKR {item.price || 0}</p>
+                      <p className="text-xs text-gray-400">Image URL: {imgSrc}</p>
                     </div>
                   </div>
                 );
@@ -516,18 +294,18 @@ export default function OrdersPage() {
             </div>
           </div>
 
-          {/* 💰 Summary */}
+          {/* Summary */}
           <div className="border-t pt-3 text-sm sm:text-base">
             <p>
               <span className="font-medium">Total Items:</span>{" "}
-              {order.cart?.reduce((acc, item) => acc + item.quantity, 0)}
+              {order.cart?.reduce((acc, item) => acc + (item.quantity || 0), 0)}
             </p>
             <p>
               <span className="font-medium">Estimated Total:</span>{" "}
               PKR{" "}
               {order.cart?.reduce((acc, item) => {
                 const priceNum = Number(item.price?.replace(/[^\d]/g, "")) || 0;
-                return acc + priceNum * item.quantity;
+                return acc + priceNum * (item.quantity || 0);
               }, 0)}
             </p>
           </div>
