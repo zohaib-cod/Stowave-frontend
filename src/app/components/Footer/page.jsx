@@ -106,10 +106,18 @@ export default function Footer() {
 
           {/* Social Icons */}
           <div className="flex space-x-4 mt-6 text-xl">
-            <a href="#"><FaFacebookF /></a>
-            <a href="#"><FaInstagram /></a>
-            <a href="#"><FaYoutube /></a>
-            <a href="#"><FaTiktok /></a>
+         <div className="flex space-x-4 mt-6 text-xl">
+  <a href="https://www.facebook.com/profile.php?id=61581100161289" target="_blank" rel="noopener noreferrer">
+    <FaFacebookF />
+  </a>
+  <a href="https://www.instagram.com/stowave.store/" target="_blank" rel="noopener noreferrer">
+    <FaInstagram />
+  </a>
+
+  <a href="https://www.tiktok.com/@stowave.stoore?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer">
+    <FaTiktok />
+  </a>
+</div>
           </div>
         </div>
       </div>
