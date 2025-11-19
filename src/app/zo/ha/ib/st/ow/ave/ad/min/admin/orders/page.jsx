@@ -5,6 +5,8 @@ import Image from "next/image";
 import { saveAs } from "file-saver";
 import ExcelJS from "exceljs";
 import { FiDownload } from "react-icons/fi"; // React icon import
+import { BiRefresh } from "react-icons/bi";
+
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -156,9 +158,10 @@ export default function OrdersPage() {
 
           <button
             onClick={fetchOrders}
-            className="px-3 py-1 rounded border bg-white hover:bg-gray-200 transition text-sm sm:text-base"
+            className="px-3 py-1 flex rounded border bg-white hover:bg-gray-200 transition text-sm sm:text-base"
           >
-            🔄 Refresh
+            <BiRefresh className="text-center m-auto"/>
+ Refresh
           </button>
 
           <button
@@ -314,3 +317,17 @@ export default function OrdersPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
