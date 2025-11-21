@@ -12,8 +12,8 @@ import {
 
 export default function Home() {
   const categories = [
-    { label: "Oversize-Shirts", image: "/simple-circle.jpeg", link: "/oversize-shirts" },
-    { label: "Regular-Shirts", image: "/oversize-circle.jpeg", link: "/regular-shirts" },
+    { label: "Oversize-Shirts", image: "/simple-circle.jpg", link: "/oversize-shirts" },
+    { label: "Regular-Shirts", image: "/oversize-circle.jpg", link: "/regular-shirts" },
   ];
   return (
     <div>
