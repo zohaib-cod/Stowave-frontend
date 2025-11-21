@@ -87,11 +87,17 @@
 //       {/* ---------- TOP BAR ---------- */}
 //       <div className="bg-black text-white text-sm flex justify-between items-center px-4 md:px-6 py-2">
 //         <div className="hidden md:flex items-center gap-4">
-//           <span className="flex items-center gap-1 hover:text-red-500 cursor-pointer">
+//           <span
+//             className="flex items-center gap-1 hover:text-red-500 cursor-pointer"
+//             onClick={() => window.open("https://wa.me/+923290010909", "_blank")}
+//           >
 //             <FaPhoneAlt /> Call Us
 //           </span>
 //           <span>|</span>
-//           <span className="flex items-center gap-1 hover:text-red-500 cursor-pointer">
+//           <span
+//             className="flex items-center gap-1 hover:text-red-500 cursor-pointer"
+//             onClick={() => window.location.href = "mailto:your-email@example.com"}
+//           >
 //             <FaEnvelope /> Email Us
 //           </span>
 //         </div>
@@ -137,9 +143,30 @@
 //           </div>
 
 //           <div className="hidden md:flex gap-3 text-white">
-//             <FaFacebookF className="hover:text-red-500 cursor-pointer" />
-//             <FaInstagram className="hover:text-red-500 cursor-pointer" />
-//             <FaTiktok className="hover:text-red-500 cursor-pointer" />
+//             <FaFacebookF
+//               className="hover:text-red-500 cursor-pointer"
+//               onClick={() =>
+//                 window.open(
+//                   "https://www.facebook.com/profile.php?id=61581100161289",
+//                   "_blank"
+//                 )
+//               }
+//             />
+//             <FaInstagram
+//               className="hover:text-red-500 cursor-pointer"
+//               onClick={() =>
+//                 window.open("https://www.instagram.com/stowave.store/", "_blank")
+//               }
+//             />
+//             <FaTiktok
+//               className="hover:text-red-500 cursor-pointer"
+//               onClick={() =>
+//                 window.open(
+//                   "https://www.tiktok.com/@stowave.stoore?is_from_webapp=1&sender_device=pc",
+//                   "_blank"
+//                 )
+//               }
+//             />
 //           </div>
 //         </div>
 //       </div>
@@ -183,7 +210,7 @@
 //               </span>
 //             )}
 //           </Link>
-//           {/* copy */}
+
 //           <Link href="/userOrder" className="relative flex items-center">
 //             <FaShoppingBag  className="hover:text-red-500 text-xl md:text-base" />
 //             {cartCount > 0 && (
@@ -192,7 +219,7 @@
 //               </span>
 //             )}
 //           </Link>
-//           {/* copy end */}
+
 //           <button
 //             className="md:hidden text-xl hover:text-red-500"
 //             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -364,10 +391,6 @@
 //     </div>
 //   );
 // }
-
-
-
-
 
 
 
@@ -708,11 +731,11 @@ function Slider() {
   const [sliders, setSliders] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Fetch sliders from **live backend**
+  // Fetch sliders from backend
   useEffect(() => {
     const fetchSliders = async () => {
       try {
-        const res = await axios.get("https://stowaveb-1.onrender.com/api/sliders"); 
+        const res = await axios.get("https://stowaveb-1.onrender.com/api/sliders");
         setSliders(res.data.sliders || []);
       } catch (err) {
         console.error("Error fetching sliders:", err);
@@ -733,7 +756,7 @@ function Slider() {
   if (sliders.length === 0) return null;
 
   return (
-    <div className="relative w-full h-[300px] md:h-[500px] overflow-hidden">
+    <div className="relative w-full h-[300px] md:h-[500px] overflow-hidden bg-black">
       <div
         className="flex transition-transform duration-1000 ease-in-out"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -747,29 +770,31 @@ function Slider() {
               src={slider.imageUrl}
               alt={`Slide ${idx + 1}`}
               fill
-              className="object-cover"
+              className="object-contain bg-black"
             />
           </div>
         ))}
       </div>
 
-      {/* Navigation Buttons */}
+      {/* Left Button */}
       <button
         onClick={() =>
           setCurrentIndex((prev) => (prev - 1 + sliders.length) % sliders.length)
         }
-        className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 md:p-3 rounded-full hover:bg-black/70 text-sm md:text-base"
+        className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 md:p-3 rounded-full hover:bg-black/70"
       >
         ❮
       </button>
+
+      {/* Right Button */}
       <button
         onClick={() => setCurrentIndex((prev) => (prev + 1) % sliders.length)}
-        className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 md:p-3 rounded-full hover:bg-black/70 text-sm md:text-base"
+        className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2 md:p-3 rounded-full hover:bg-black/70"
       >
         ❯
       </button>
 
-      {/* Pagination Dots */}
+      {/* Dots */}
       <div className="absolute bottom-4 w-full flex justify-center gap-2">
         {sliders.map((_, idx) => (
           <button
