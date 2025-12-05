@@ -22,7 +22,8 @@ export default function RegularShirtsPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/api/products?category=regular-tshirts`);
+        // const res = await fetch(`${BASE_URL}/api/products?category=regular-tshirts`);
+        const res = await fetch(`${BASE_URL}/api/products?category=winter-shirts`);
         const data = await res.json();
         // Normalize product shape to match the Oversize UI expectations
         const list =
