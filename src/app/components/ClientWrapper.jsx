@@ -6,8 +6,6 @@ import Footer from "./Footer/page";
 
 export default function ClientWrapper({ children }) {
   const pathname = usePathname();
-
-  // Hide header/footer on any route containing '/admin' (even deeply nested)
   const hideLayout =
     pathname.includes("/admin") ||
     pathname.includes("/zo/ha/ib/st/ow/ave/ad/min/admin") ||
