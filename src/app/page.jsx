@@ -9,6 +9,7 @@ import {
   FaStarHalfAlt,
   FaCheckCircle,
 } from "react-icons/fa";
+import SwagShirtsPage from "./SweatShirts/page";
 
 export default function Home() {
   const categories = [
@@ -68,6 +69,10 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <section className="py-8 md:py-10">
+
+      <SwagShirtsPage />
+      </section>
 
       {/* Oversize Shirts Section */}
       <section className="py-8 md:py-10">
@@ -78,6 +83,11 @@ export default function Home() {
       <section className="py-8 md:py-10">
         <RegularShirtsPage />
       </section>
+      {/* Regular Fit Section */}
+      {/* <section className="py-8 md:py-10">
+        <SwagShirtsPage />
+      </section> */}
+    
     </div>
   );
 }

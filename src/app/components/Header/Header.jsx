@@ -80,9 +80,9 @@ export default function Header() {
     { href: "/", label: "Home" },
     { href: "/oversize-shirts", label: "Oversize-Shirts" },
     { href: "/regular-shirts", label: "Regular-Shirts" },
-    { href: "/swage-shirts", label: "SweatShirts" },
+    { href: "/SweatShirts", label: "SweatShirts" },
   ];
-
+ 
   return (
     <header>
       {/* ---------- TOP BAR ---------- */}

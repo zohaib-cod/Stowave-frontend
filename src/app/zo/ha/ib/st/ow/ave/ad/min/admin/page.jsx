@@ -1,5 +1,4 @@
 "use client";
-import AdminProtectedRoute from "@/app/components/AdminProtectedRoute";
 
 import React, { useState } from "react";
 import {
