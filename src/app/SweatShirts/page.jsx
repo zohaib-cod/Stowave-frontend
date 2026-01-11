@@ -296,4 +296,4 @@ export default function SwagShirtsPage() {
       )}
     </div>
   );
-}
+}// jsx code for SweatShirts page
