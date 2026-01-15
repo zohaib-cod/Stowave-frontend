@@ -1,4 +1,6 @@
 // components/WorkingPage.jsx
+"use client";
+
 import React from 'react';
 
 const WorkingPage = () => {
