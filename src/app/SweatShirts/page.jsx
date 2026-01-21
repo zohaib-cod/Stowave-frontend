@@ -105,13 +105,12 @@ export default function SwagShirtsPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12 text-black dark:text-white transition-colors duration-300">
       <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center md:text-left">
-        SweatShirts
+        SwetShirts
       </h2>
 
       <p className="text-gray-500 mb-6 md:mb-8 text-sm md:text-base text-center md:text-left">
-        Trendy & stylish SweatShirts shirts perfect for casual and streetwear looks.
+        Trendy & stylish SwetShirts shirts perfect for casual and streetwear looks.
       </p>
-
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {[...Array(8)].map((_, i) => (
