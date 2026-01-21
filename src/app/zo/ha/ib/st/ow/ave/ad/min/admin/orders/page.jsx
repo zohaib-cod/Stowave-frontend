@@ -1,5 +1,4 @@
 "use client";
-import AdminProtectedRoute from "@/app/components/AdminProtectedRoute";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { saveAs } from "file-saver";
