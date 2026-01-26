@@ -1183,12 +1183,10 @@ function DarazSlider({ sliders }) {
       >
         {sliders.map((slider, idx) => (
           <div key={idx} className="w-full flex-shrink-0 relative">
-            <Image
-              src={slider.imageUrl} // full URL
+            <img
+              src={slider.imageUrl} // full URL required
               alt={`Slide ${idx + 1}`}
-              fill
-              className="object-cover w-full h-full"
-              priority
+              className="w-full h-full object-cover"
             />
           </div>
         ))}

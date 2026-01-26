@@ -76,20 +76,12 @@
 
 
 
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: "http",
-        hostname: "localhost", // local images
-      },
-      {
-        protocol: "https",
-        hostname: "stowaveb-1.onrender.com", // remote API images
-      },
+      { protocol: "https", hostname: "stowaveb-1.onrender.com" },
     ],
-    unoptimized: true, // optional, safe for dev
+    unoptimized: true,
   },
 };
 
