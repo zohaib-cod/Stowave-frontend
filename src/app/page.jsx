@@ -115,6 +115,7 @@ import SwagShirtsPage from "./SweatShirts/page";
 export default function Home() {
   const categories = [
     { label: "Oversize-Shirts", image: "/simple-circle.jpg", link: "/oversize-shirts" },
+    { label: "SweatShirts", image: "/SweatShirt-circle.png", link: "/SweatShirts" },
     { label: "Regular-Shirts", image: "/oversize-circle.jpg", link: "/regular-shirts" },
   ];
   return (
