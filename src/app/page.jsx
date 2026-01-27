@@ -111,7 +111,6 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import SwagShirtsPage from "./SweatShirts/page";
-
 export default function Home() {
   const categories = [
     { label: "Oversize-Shirts", image: "/simple-circle.jpg", link: "/oversize-shirts" },
@@ -180,7 +179,8 @@ export default function Home() {
       <section className="py-8 md:py-10">
         <OversizeShirts />
       </section>
-
+         {/* <DarazSlider /> */}
+         {/* DarazSlider */}
       {/* Regular Fit Section */}
       <section className="py-8 md:py-10">
         <RegularShirtsPage />
